@@ -9,7 +9,7 @@ class Rossmann( object ):
     def __init__( self ):
         self.home_path = ''
         self.competition_distance_scaler = pickle.load( open( self.home_path + 'parameter/competition_distance_scaler.pkl', 'rb') )
-        self.competition_time_month_scaler = pickle.load( open( self.home_path + 'parameter/competition_distance_scaler.pkl', 'rb') )
+        self.competition_time_month_scaler = pickle.load( open( self.home_path + 'parameter/competition_time_month_scaler.pkl', 'rb') )
         self.promo_time_week_scaler = pickle.load( open( self.home_path + 'parameter/promo_time_week_scaler.pkl', 'rb') )
         self.year_scaler = pickle.load( open( self.home_path + 'parameter/year_scaler.pkl', 'rb') )
         self.store_type_scaler = pickle.load( open( self.home_path + 'parameter/store_type_scaler.pkl', 'rb') )
@@ -124,16 +124,16 @@ class Rossmann( object ):
         
         # Rescaling    
         # competition distance
-        df5['competition_distance'] = self.competition_distance_scaler.fit_transform(df5[['competition_distance']].values )
+        df5['competition_distance'] = self.competition_distance_scaler.transform(df5[['competition_distance']].values )
 
         # competition time month
-        df5['competition_time_month'] = self.competition_time_month_scaler.fit_transform(df5[['competition_time_month']].values )
+        df5['competition_time_month'] = self.competition_time_month_scaler.transform(df5[['competition_time_month']].values )
 
         # promo time week
-        df5['promo_time_week'] = self.promo_time_week_scaler.fit_transform(df5[['promo_time_week']].values )
+        df5['promo_time_week'] = self.promo_time_week_scaler.transform(df5[['promo_time_week']].values )
 
         # year
-        df5['year'] = self.year_scaler.fit_transform(df5[['year']].values )
+        df5['year'] = self.year_scaler.transform(df5[['year']].values )
         
         
         # 5.3.1. Encoding 
@@ -141,7 +141,7 @@ class Rossmann( object ):
         df5 = pd.get_dummies(df5, prefix=['state_holiday'], columns=['state_holiday'])
 
         # store type - Label Encoding
-        df5['store_type'] = self.store_type_scaler.fit_transform( df5['store_type'] )
+        df5['store_type'] = self.store_type_scaler.transform( df5['store_type'] )
 
         # assortment - Ordinal Encoding
         assortment_dict = {'basic': 1, 'extra': 2, 'extended': 3}
@@ -192,7 +192,7 @@ class Rossmann( object ):
     def get_prediction( self, model, original_data, test_data ):
         # prediction
         pred = model.predict( test_data)
-        
+
         # join pred into the original data
         original_data['prediction'] = np.expm1( pred )
         
